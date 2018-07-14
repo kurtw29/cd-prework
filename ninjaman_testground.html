@@ -1,0 +1,137 @@
+<html>
+<head>
+	<title>NInjaMan</title>
+	<style type= "text/css">
+		* {
+			margin:0;
+			padding:0;
+		}
+		#world{
+			line-height:0;
+		}
+		.wall {
+			background-color: skyblue;
+			height:50px;
+			width:50px;
+			display: inline-block;
+		}
+		.sushi {
+			background-color: black;
+			height:50px;
+			width:50px;
+			display: inline-block;
+			background-image: url('img/sushi.png');
+			background-size: contain;
+		}
+		.onigiri {
+			background-color: black;
+			height:50px;
+			width:50px;
+			display: inline-block;
+			background-image: url('img/onigiri.png');
+			background-size: contain;
+		}
+		.blank {
+			background-color: black;
+			height:50px;
+			width:50px;
+			display: inline-block;
+		}
+		#ninjaMan {
+			background-color: black;
+			height:50px;
+			width:50px;
+			display: inline-block;
+			background-image: url('img/ninja.gif');
+			background-size: contain;
+			position:absolute;
+			top:0px;
+			left:0px;
+		}
+		#sushiCounter{
+		}
+	</style>
+</head>
+<body>
+	<div id='world'></div>
+	<div id = 'ninjaMan'></div>
+	<div id='sushiCounter'></div>
+</body>
+<script type="text/javascript">
+		var world = [
+			[0,0,0,2,2,1],
+			[0,1,0,0,2,2],
+			[0,0,1,1,2,0],
+			[1,0,0,1,2,0],
+			[1,0,0,0,2,0],
+			[0,0,1,0,2,1],
+		];
+
+		var worldDic ={
+			0: 'blank',
+			1: 'wall',
+			2: 'sushi',
+			3: 'onigiri'
+		};
+
+		function drawWorld(){
+			var output = "";
+
+			for(var r=0;r<world.length;r++){
+				output += "<div class = 'row'>";
+				for (var x = 0; x <world[r].length;x++){
+					output+= "<div class = '"+worldDic[world[r][x]]+"'></div>";
+					//output += "<div class = '" + worldDic[world[row][x])] +"'></div>"
+					//console.log("element: ",worldDic[world[row][x])]
+				}
+				output+="</div>"
+				
+			}	
+				document.getElementById('world').innerHTML = output;
+		}
+		drawWorld();
+
+		//LET'S MOVE NINJA! Onkeydown!
+		var ninjaPos ={
+			x: 0,
+			y: 0
+		};
+		var sushiCount=0, onigiriCount=0, points=0;
+
+		function moveNinja(){
+			document.getElementById('ninjaMan').style.top = ninjaPos.y*50+"px";
+			document.getElementById('ninjaMan').style.left =ninjaPos.x*50+"px";
+			console.log("ninjaPos X: "+ninjaPos.x);
+			console.log("ninjaPos Y: "+ninjaPos.y);
+		}
+		document.onkeydown = function(m){
+			console.log(m);
+			if (m.keyCode==38 && ninjaPos.y-1>=0 && world[ninjaPos.y-1][ninjaPos.x]!=1){ //move up until reaches top boundary
+								ninjaPos.y--;
+			}
+			else if(m.keyCode==40 && ninjaPos.y<=world.length-1 && world[ninjaPos.y+1][ninjaPos.x]!=1){ //move down
+				ninjaPos.y++;
+			}
+			else if(m.keyCode==37 && ninjaPos.x-1>=0 && world[ninjaPos.y][ninjaPos.x-1]!=1){ //move left
+				ninjaPos.x--;
+			}
+			else if (m.keyCode==39 && ninjaPos.x<world[ninjaPos.y].length-1 && world[ninjaPos.y][ninjaPos.x+1]!=1){ //move right
+				ninjaPos.x++;
+			}
+			if(world[ninjaPos.y][ninjaPos.x] == 2){
+					world[ninjaPos.y][ninjaPos.x] = 0;
+					sushiCount+=1;
+			}
+			if(world[ninjaPos.y][ninjaPos.x] == 3){
+					world[ninjaPos.y][ninjaPos.x] = 0;
+					onigiriCount+=1;
+			}
+			points=50*sushiCount+25*onigiriCount;
+			console.log("Sushi Count: "+sushiCount);
+			console.log("Onigiri Count: "+onigiriCount);
+			console.log("Total points: "+points);
+			moveNinja();
+			drawWorld();
+		}
+</script>
+</html>
